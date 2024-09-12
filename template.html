@@ -1,0 +1,93 @@
+<!DOCTYPE html>  
+<html>  
+<head>  
+    <meta charset="UTF-8">  
+    <title>PMP关键路径计算</title>  
+    <style>        table {  
+            border-collapse: collapse;  
+            width: 100%;  
+        }  
+  
+        th, td {  
+            border: 1px solid black;  
+            padding: 8px;  
+            text-align: center;  
+        }  
+  
+        th {  
+            background-color: #4CAF50;  
+            color: white;  
+        }  
+  
+        .critical {  
+            background-color: #ffcccc;  
+        }  
+    </style>  
+</head>  
+<body>  
+<h1>課題リスト</h1>  
+<table>  
+    <tr>  
+        <th>ID</th>  
+        <th>タスク</th>  
+        <th>期間</th>  
+        <th>先行アクティビティ</th>  
+        <th>後続アクティビティ</th>  
+        <th>最早開始日EST</th>  
+        <th>最早終了日EFT</th>  
+        <th>最遅開始日LST</th>  
+        <th>最遅終了日LFT</th>  
+        <th>トータル フロートTF</th>  
+        <th>フリー フロートFF</th>  
+    </tr>  
+    {% for activity in activities %}  
+    <tr {% if activity in critical_path %}class="critical" {% endif %}>  
+        <td>{{ activity.id }}</td>  
+        <td>{{ activity.name }}</td>  
+        <td>{{ activity.duration }}</td>  
+        <td>            {% for predecessor in activity.predecessors %}  
+            {% for act in activities %}  
+            {% if act.id == predecessor %}  
+            {{ act.name }}  
+            {% endif %}  
+            {% endfor %}  
+            {% if not loop.last %}, {% endif %}  
+            {% endfor %}  
+        </td>  
+        <td>            {% for successor in activity.successors %}  
+            {% for act in activities %}  
+  
+            {% if act.id == successor %}  
+            {{ act.name }}  
+            {% endif %}  
+            {% endfor %}  
+            {% if not loop.last %}, {% endif %}  
+            {% endfor %}  
+        </td>  
+        <td>{{ activity.est }}</td>  
+        <td>{{ activity.eft }}</td>  
+        <td>{{ activity.lst }}</td>  
+        <td>{{ activity.lft }}</td>  
+        <td>{{ activity.tf }}</td>  
+        <td>{{ activity.ff }}</td>  
+    </tr>  
+    {% endfor %}  
+</table>  
+<p>クリティカルパス: {% for activity in critical_path %}{{ activity.name }}{% if not loop.last %} -> {% endif %}{% endfor  
+    %}</p>  
+<p>プロジェクトにおける期間: {{ project_duration }}</p>  
+<p>Precedence Diagramming Method: AON: <br/>[image]</p>  
+<p>  
+<table>  
+    <tr>  
+        <th>実行過程</th>  
+    </tr>  
+    {% for i in log %}  
+    <tr>  
+        <td style="text-align: left">{{i}}</td>  
+    </tr>  
+    {% endfor %}  
+</table>  
+</p>  
+</body>  
+</html>
